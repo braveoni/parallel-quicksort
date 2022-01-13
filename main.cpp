@@ -1,6 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
+#define n 100000000
+static int a[n];
 
 int partition(int * a, int p, int r)
 {
@@ -40,27 +42,24 @@ void quicksort(int * a, int p, int r)
 
     if(p < r){
         div = partition(a, p, r);
-#pragma omp parallel sections
+        #pragma omp parallel sections
         {
-#pragma omp section
-            quicksort(a, p, div - 1);
-#pragma omp section
-            quicksort(a, div + 1, r);
-
+            #pragma omp section
+                quicksort(a, p, div - 1);
+            #pragma omp section
+                quicksort(a, div + 1, r);
         }
     }
 }
 
 int main()
 {
-    int a[10] = {5, 3, 8, 4, 0, 9, 2, 1, 7, 6};
-    int i;
+    for (int & i : a) i = rand() % n;
 
-    quicksort(a, 0, 9);
+    quicksort(a, 0, n - 1);
 
-    for(i = 0;i < 10; i++){
-        printf("%d\t", a[i]);
-    }
+//    for(int i: a) printf("%d\t", i);
+
     printf("\n");
     return 0;
 }
